@@ -1,0 +1,66 @@
+PLACE
+	INTERNAL p102, p3, p4, p7, end, p8, p5, p2, p1, start, p101, p100;
+	INPUT ReceiveResultAppealfromPrefecture-I-10, SendFine-I-5, Payment-I-16, SendAppealtoPrefecture-I-8, NotifyResultAppealtoOffender-I-1, Addpenalty-I-14;
+	OUTPUT SendFine-O-3, Addpenalty-O-12, SendAppealtoPrefecture-O-6, Payment-O-15, ReceiveResultAppealfromPrefecture-O-9, NotifyResultAppealtoOffender-O-0;
+	SYNCHRONOUS ;
+
+INITIALMARKING start;
+
+FINALMARKING end;
+
+TRANSITION NotifyResultAppealtoOffender
+CONSUME ReceiveResultAppealfromPrefecture-I-10, p5;
+PRODUCE p100, NotifyResultAppealtoOffender-O-0;
+
+TRANSITION t2
+CONSUME p102, Payment-I-16;
+PRODUCE p101;
+
+TRANSITION ReceiveResultAppealfromPrefecture
+CONSUME p4, SendAppealtoPrefecture-I-8;
+PRODUCE p5, ReceiveResultAppealfromPrefecture-O-9;
+
+TRANSITION SendFine
+CONSUME p3;
+PRODUCE SendFine-O-3, p2;
+
+TRANSITION Addpenalty
+CONSUME p7;
+PRODUCE Addpenalty-O-12, p101;
+
+TRANSITION AppealtoJudge
+CONSUME NotifyResultAppealtoOffender-I-1, p100;
+PRODUCE end;
+
+TRANSITION CreateFine
+CONSUME start;
+PRODUCE p3;
+
+TRANSITION t3
+CONSUME NotifyResultAppealtoOffender-I-1, p100;
+PRODUCE p101;
+
+TRANSITION InsertFineNotification
+CONSUME SendFine-I-5, p2;
+PRODUCE p7, p8;
+
+TRANSITION SendAppealtoPrefecture
+CONSUME p1;
+PRODUCE SendAppealtoPrefecture-O-6, p4;
+
+TRANSITION InsertDateAppealtoPrefecture
+CONSUME p8;
+PRODUCE p1;
+
+TRANSITION Payment
+CONSUME p101, Addpenalty-I-14;
+PRODUCE p102, Payment-O-15;
+
+TRANSITION SendforCreditCollection
+CONSUME NotifyResultAppealtoOffender-I-1, p100;
+PRODUCE end;
+
+TRANSITION t1
+CONSUME p102, Payment-I-16;
+PRODUCE end;
+
