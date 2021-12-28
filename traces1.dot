@@ -1,0 +1,50 @@
+digraph BP {
+graph [fontname="Helvetica" nodesep=0.3 ranksep="0.2 equally" fontsize=10];
+node [fontname="Helvetica" fontsize=8 ];
+edge [fontname="Helvetica" fontsize=8 color=white arrowhead=none weight="20.0"];
+
+node [shape=circle];
+  c0 []
+  c0_l [shape=none];
+  c0_l -> c0 [headlabel="{}-2"]
+  c1 []
+  c1_l [shape=none];
+  c1_l -> c1 [headlabel="{0}-2"]
+  c2 []
+  c2_l [shape=none];
+  c2_l -> c2 [headlabel="{0, 2}-2"]
+  c3 []
+  c3_l [shape=none];
+  c3_l -> c3 [headlabel="{0, 2, 21}-2"]
+  c4 []
+  c4_l [shape=none];
+  c4_l -> c4 [headlabel="{0, 2, 5, 21}-1"]
+  c5 []
+  c5_l [shape=none];
+  c5_l -> c5 [headlabel="{0, 2, 5, 6, 21}-2"]
+  c6 []
+  c6_l [shape=none];
+  c6_l -> c6 [headlabel="{0, 2, 5, 6, 7, 21}-2"]
+  c7 []
+  c7_l [shape=none];
+  c7_l -> c7 [headlabel="{0, 2, 5, 6, 7, 11, 21}-2"]
+  c8 []
+  c8_l [shape=none];
+  c8_l -> c8 [headlabel="{0, 2, 5, 6, 7, 11, 18, 21}-2"]
+  c9 []
+  c9_l [shape=none];
+  c9_l -> c9 [headlabel="{0, 2, 6, 21}-1"]
+
+
+ edge [fontname="Helvetica" fontsize=8 arrowhead=normal color=black];
+  c0 -> c1[label="a"]
+  c1 -> c2[label="c"]
+  c2 -> c3[label="t8"]
+  c3 -> c4[label="f"]
+  c3 -> c9[label="g"]
+  c4 -> c5[label="g"]
+  c5 -> c6[label="h"]
+  c6 -> c7[label="l"]
+  c7 -> c8[label="s"]
+  c9 -> c5[label="f"]
+}

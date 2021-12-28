@@ -1,0 +1,110 @@
+digraph BP {
+graph [fontname="Helvetica" nodesep=0.3 ranksep="0.2 equally" fontsize=10];
+node [fontname="Helvetica" fontsize=8 ];
+edge [fontname="Helvetica" fontsize=8 color=white arrowhead=none weight="20.0"];
+
+node [shape=circle];
+  c0 []
+  c0_l [shape=none];
+  c0_l -> c0 [headlabel="{}-20"]
+  c1 []
+  c1_l [shape=none];
+  c1_l -> c1 [headlabel="{0}-20"]
+  c2 []
+  c2_l [shape=none];
+  c2_l -> c2 [headlabel="{0, 1}-20"]
+  c3 []
+  c3_l [shape=none];
+  c3_l -> c3 [headlabel="{0, 1, 3}-20"]
+  c4 []
+  c4_l [shape=none];
+  c4_l -> c4 [headlabel="{0, 1, 3, 4}-20"]
+  c5 []
+  c5_l [shape=none];
+  c5_l -> c5 [headlabel="{0, 1, 3, 4, 20}-20"]
+  c6 []
+  c6_l [shape=none];
+  c6_l -> c6 [headlabel="{0, 1, 3, 4, 10, 20}-10"]
+  c7 []
+  c7_l [shape=none];
+  c7_l -> c7 [headlabel="{0, 1, 3, 4, 8, 10, 20}-12"]
+  c8 []
+  c8_l [shape=none];
+  c8_l -> c8 [headlabel="{0, 1, 3, 4, 8, 10, 12, 20}-9"]
+  c9 []
+  c9_l [shape=none];
+  c9_l -> c9 [headlabel="{0, 1, 3, 4, 8, 10, 12, 16, 20}-12"]
+  c10 []
+  c10_l [shape=none];
+  c10_l -> c10 [headlabel="{0, 1, 3, 4, 8, 10, 12, 16, 17, 20}-10"]
+  c11 []
+  c11_l [shape=none];
+  c11_l -> c11 [headlabel="{0, 1, 3, 4, 8, 10, 12, 13, 16, 17, 20}-20"]
+  c12 []
+  c12_l [shape=none];
+  c12_l -> c12 [headlabel="{0, 1, 3, 4, 8, 10, 12, 13, 16, 17, 19, 20}-20"]
+  c13 []
+  c13_l [shape=none];
+  c13_l -> c13 [headlabel="{0, 1, 3, 4, 8, 10, 12, 13, 16, 17, 18, 19, 20}-20"]
+  c14 []
+  c14_l [shape=none];
+  c14_l -> c14 [headlabel="{0, 1, 3, 4, 8, 10, 12, 13, 20}-4"]
+  c15 []
+  c15_l [shape=none];
+  c15_l -> c15 [headlabel="{0, 1, 3, 4, 8, 10, 12, 13, 16, 20}-10"]
+  c16 []
+  c16_l [shape=none];
+  c16_l -> c16 [headlabel="{0, 1, 3, 4, 8, 20}-10"]
+  c17 []
+  c17_l [shape=none];
+  c17_l -> c17 [headlabel="{0, 1, 3, 4, 8, 12, 20}-4"]
+  c18 []
+  c18_l [shape=none];
+  c18_l -> c18 [headlabel="{0, 1, 3, 4, 8, 12, 13, 20}-1"]
+  c19 []
+  c19_l [shape=none];
+  c19_l -> c19 [headlabel="{0, 1, 3, 4, 8, 10, 16, 20}-9"]
+  c20 []
+  c20_l [shape=none];
+  c20_l -> c20 [headlabel="{0, 1, 3, 4, 10, 16, 20}-4"]
+  c21 []
+  c21_l [shape=none];
+  c21_l -> c21 [headlabel="{0, 1, 3, 4, 8, 10, 16, 17, 20}-4"]
+  c22 []
+  c22_l [shape=none];
+  c22_l -> c22 [headlabel="{0, 1, 3, 4, 10, 16, 17, 20}-1"]
+
+
+ edge [fontname="Helvetica" fontsize=8 arrowhead=normal color=black];
+  c0 -> c1[label="a"]
+  c1 -> c2[label="b"]
+  c2 -> c3[label="d"]
+  c3 -> c4[label="e"]
+  c4 -> c5[label="t7"]
+  c5 -> c6[label="k"]
+  c5 -> c16[label="i"]
+  c6 -> c7[label="i"]
+  c6 -> c20[label="q"]
+  c7 -> c8[label="m"]
+  c7 -> c19[label="q"]
+  c8 -> c9[label="q"]
+  c8 -> c14[label="n"]
+  c9 -> c10[label="r"]
+  c9 -> c15[label="n"]
+  c10 -> c11[label="n"]
+  c11 -> c12[label="t22"]
+  c12 -> c13[label="s"]
+  c14 -> c15[label="q"]
+  c15 -> c11[label="r"]
+  c16 -> c17[label="m"]
+  c16 -> c7[label="k"]
+  c17 -> c18[label="n"]
+  c17 -> c8[label="k"]
+  c18 -> c14[label="k"]
+  c19 -> c9[label="m"]
+  c19 -> c21[label="r"]
+  c20 -> c19[label="i"]
+  c20 -> c22[label="r"]
+  c21 -> c10[label="m"]
+  c22 -> c21[label="i"]
+}
