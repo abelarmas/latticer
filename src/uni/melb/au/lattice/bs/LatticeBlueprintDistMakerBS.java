@@ -1,7 +1,11 @@
 package uni.melb.au.lattice.bs;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.Comparator;
@@ -14,10 +18,19 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Queue;
+import java.util.Set;
 
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.processmining.framework.util.Pair;
+import org.processmining.models.connections.GraphLayoutConnection;
+import org.processmining.models.graphbased.directed.DirectedGraphElementWeights;
+import org.processmining.models.graphbased.directed.transitionsystem.AcceptStateSet;
+import org.processmining.models.graphbased.directed.transitionsystem.StartStateSet;
+import org.processmining.models.graphbased.directed.transitionsystem.State;
+import org.processmining.models.graphbased.directed.transitionsystem.TransitionSystem;
+import org.processmining.models.graphbased.directed.transitionsystem.TransitionSystemFactory;
+import org.processmining.plugins.tsml.Tsml;
 
 import com.apporiented.algorithm.clustering.AverageLinkageStrategy;
 import com.apporiented.algorithm.clustering.Cluster;
@@ -33,6 +46,7 @@ import com.google.common.collect.Table.Cell;
 
 import at.unisalzburg.dbresearch.apted.costmodel.CostModel;
 import at.unisalzburg.dbresearch.apted.node.Node;
+import uni.melb.au.lattice.Lattice;
 import uni.melb.au.log.Relabeler;
 import uni.melb.au.log.Trace;
 
@@ -136,7 +150,7 @@ public class LatticeBlueprintDistMakerBS {
 	private void createLattices() {
 		int i = 0;
 		int undef = 0;
-		
+
 		try {
 			for (Multiset<Integer> key : multiSetEquivCounter.keySet()) {
 				// if (multiSetEquivCounter.get(key) > 1)
@@ -149,7 +163,7 @@ public class LatticeBlueprintDistMakerBS {
 
 					if (dynamic) {
 						this.threshold = computeThreshold(traceEq);
-						
+
 						System.out.println("Completeness threshold: " + this.threshold);
 					}
 
@@ -191,7 +205,7 @@ public class LatticeBlueprintDistMakerBS {
 								System.out.println("Error .....");
 								System.exit(0);
 							}
-							
+
 							int variantNumber = getVariantNumber(traceEquivalence);
 							int traceLenght = traceEquivalence.iterator().next().getListTrace().size();
 
@@ -227,11 +241,11 @@ public class LatticeBlueprintDistMakerBS {
 	}
 
 	private int getXTraceCount(HashSet<Trace> traceEq) {
-		int xTraceCounter =  0;
-		
-		for(Trace t : traceEq)
+		int xTraceCounter = 0;
+
+		for (Trace t : traceEq)
 			xTraceCounter += t.getXTraces().size();
-		
+
 		return xTraceCounter;
 	}
 
@@ -241,7 +255,8 @@ public class LatticeBlueprintDistMakerBS {
 	}
 
 	private double computeThreshold(HashSet<Trace> traceEq) {
-		// The completeness factor is based on the proportion of the trace equivalence of the log
+		// The completeness factor is based on the proportion of the trace equivalence
+		// of the log
 //		double sum = 0.0d;
 //		for (Trace t : traceEq)
 //			sum += t.getXTraces().size();
@@ -249,8 +264,9 @@ public class LatticeBlueprintDistMakerBS {
 //		double total = this.log.size();
 //		
 //		return (sum/total);
-		
-		// Compute completeness threshold based on the probability of an exponential distribution.
+
+		// Compute completeness threshold based on the probability of an exponential
+		// distribution.
 //		double k = 1.0f;
 //		
 //		double sum = 0.0d;
@@ -263,8 +279,9 @@ public class LatticeBlueprintDistMakerBS {
 //			System.out.println("Error! value less than 0");
 //		
 //		return 1 - (1/Math.log(sum + k));
-		
-		// Compute completeness threshold based on the probability of an exponential distribution.
+
+		// Compute completeness threshold based on the probability of an exponential
+		// distribution.
 		System.out.println("Average = " + this.average);
 		System.out.println("decay param = " + (1.0f / this.average));
 
@@ -276,9 +293,9 @@ public class LatticeBlueprintDistMakerBS {
 
 		System.out.println(sum + " out of " + this.log.size());
 
-		return 1-Math.pow(Math.E, -1.0d * decay * sum);
+		return 1 - Math.pow(Math.E, -1.0d * decay * sum);
 //		
-		
+
 //		int max = 0;
 //		int min = Integer.MAX_VALUE;
 //		
@@ -848,11 +865,11 @@ public class LatticeBlueprintDistMakerBS {
 			relabeler.serializeLog(log, outputFolder, "relabelEvt" + String.format("%.1f", threshold));
 		}
 	}
-	
+
 	public void serializeLog() throws IOException {
 		// Write to file
 		Relabeler relabeler = new Relabeler(originalName);
-		
+
 		if (dynamic) {
 			relabeler.serializeLog(log, outputFolder, "relabelEvtDynamic");
 		} else {
@@ -860,7 +877,7 @@ public class LatticeBlueprintDistMakerBS {
 //			relabeler.serializeLog(log, outputFolder, "relabelEvt" + String.format("%.1f", threshold));
 		}
 	}
-	
+
 	public int serializeLogsProgressively(Table<ElementBS, ElementBS, ElementBS> classElements,
 			HashMap<ElementBS, Integer> equivalences) {
 		LinkedList<LatticeBS> orderedLattices = new LinkedList<>();
@@ -883,20 +900,19 @@ public class LatticeBlueprintDistMakerBS {
 		Iterator<LatticeBS> iterator = orderedLattices.iterator();
 		while (iterator.hasNext()) {
 			LatticeBS lat = iterator.next();
-			
-			if(lat.getNumberOfXtraces() < 100)
+
+			if (lat.getNumberOfXtraces() < 100)
 				break;
-			
+
 			subCollection.add(lat);
 
 			System.out.println("Number of XTraces: " + lat.getNumberOfXtraces());
 			System.out.println(lat.toDot());
-			
-			
+
 			duplicates = relabeler.relabel(classElements, equivalences, this.log, latticeCollection);
-			relabeler.createLog(subCollection, outputFolder, "relabelEvtDynamic"+subCollection.size(), false);
+			relabeler.createLog(subCollection, outputFolder, "relabelEvtDynamic" + subCollection.size(), false);
 		}
-		
+
 		return subCollection.size();
 	}
 
@@ -998,7 +1014,6 @@ public class LatticeBlueprintDistMakerBS {
 //		modelsByLevels(cluster, indexes, classElements, equivalences);
 //        modelsByGroups(cluster, indexes, 5);
 	}
-
 
 	private HashSet<LatticeBS> createGroup(Cluster cluster, LinkedList<LatticeBS> indexes) {
 		HashSet<LatticeBS> groups = new HashSet<>();
@@ -1141,5 +1156,145 @@ public class LatticeBlueprintDistMakerBS {
 		minMaxAvg[2] = (avg / this.latticeCollection.size()) * 100.0d;
 
 		return minMaxAvg;
+	}
+
+	public void combineLattices() {
+		Pair<HashMap<ElementBS, Integer>, HashMultimap<Integer, ElementBS>> eqs = findEquivalencesLattices();
+		HashMultimap<Integer, ElementBS> reverse = eqs.getSecond();
+		System.out.println(reverse);
+
+		TransitionSystem ts = TransitionSystemFactory.newTransitionSystem("tAll");
+		HashMap<ElementBS, State> mapStates = new HashMap<>();
+		HashMap<ElementBS, ElementBS> mapElements = new HashMap<>();
+
+		for (Integer key : reverse.keySet()) {
+			ElementBS single = reverse.get(key).iterator().next();
+			ts.addState(single);
+			mapElements.put(single, single);
+
+			for (ElementBS st : reverse.get(key))
+				if (st != single) {
+//					ts.addState(st);
+					mapStates.put(st, ts.getNode(single));
+					mapElements.put(st, single);
+				}
+		}
+
+		ElementBS botRep = null;
+		HashSet<ElementBS> finalStates = new HashSet<>();
+		for (LatticeBS lattice : latticeCollection) {
+			for (ElementBS e1 : lattice.getElements())
+				for (ElementBS e2 : e1.post)
+					ts.addTransition(mapElements.get(e1), mapElements.get(e2), lattice.getLabelBetween(e1, e2));
+
+			if (botRep == null)
+				botRep = mapElements.get(lattice.getBottom());
+
+			finalStates.add(mapElements.get(lattice.getTop()));
+		}
+
+		StartStateSet starts = new StartStateSet();
+		starts.add(botRep);
+
+		AcceptStateSet accepts = new AcceptStateSet();
+		accepts.addAll(finalStates);
+
+		DirectedGraphElementWeights w = new DirectedGraphElementWeights();
+		HashSet<ElementBS> setValues = new HashSet<>(mapElements.values());
+		for (ElementBS e : setValues)
+			w.put(e, 3);
+
+		GraphLayoutConnection layout = new GraphLayoutConnection(ts);
+		layout.expandAll();
+
+		Tsml tsml = new Tsml().marshall(ts, starts, accepts, w, layout);
+		String text = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n" + tsml.exportElement(tsml);
+
+		try {
+			BufferedWriter bw;
+			bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("tsFull.tsml"))));
+			bw.write(text);
+			bw.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public Pair<HashMap<ElementBS, Integer>, HashMultimap<Integer, ElementBS>> findEquivalencesLattices() {
+		int equivCounter = 0;
+		HashMap<ElementBS, Integer> equivalences = new HashMap<>();
+		HashMultimap<Integer, ElementBS> equivalencesReverse = HashMultimap.<Integer, ElementBS>create();
+		HashMultimap<BitSet, ElementBS> mapHelper = HashMultimap.<BitSet, ElementBS>create();
+
+		for (LatticeBS lattice : this.latticeCollection) {
+			Queue<ElementBS> queue = new LinkedList<>();
+			queue.add(lattice.bottom);
+
+			HashSet<ElementBS> visited = new HashSet<>();
+
+			while (!queue.isEmpty()) {
+				ElementBS p = queue.poll();
+				if (visited.contains(p))
+					continue;
+
+				visited.add(p);
+
+				if (!mapHelper.containsKey(p.code)) {
+					mapHelper.put(p.code, p);
+					equivalences.put(p, equivCounter++);
+					equivalencesReverse.put(equivalences.get(p), p);
+
+					queue.addAll(p.post);
+				} else {
+					Set<ElementBS> candidates = new HashSet<>(mapHelper.get(p.code));
+					Set<ElementBS> candidatesFiltered = new HashSet<ElementBS>();
+
+					for (ElementBS c : candidates) {
+						boolean found = false;
+
+						for (ElementBS c1 : candidatesFiltered)
+							if (equivalences.get(c).intValue() == equivalences.get(c1).intValue())
+								found = true;
+
+						if (!found) {
+							candidatesFiltered.add(c);
+
+							mapHelper.put(p.code, p);
+							if (latEquivalent(p, c, equivalences)) {
+								equivalences.put(p, equivalences.get(c));
+								equivalencesReverse.put(equivalences.get(c), p);							
+							} else {
+								equivalences.put(p, equivCounter++);
+								equivalencesReverse.put(equivalences.get(p), p);
+							}
+							
+							queue.addAll(p.post);
+						}
+					}
+				}
+
+			}
+		}
+
+		return new Pair<>(equivalences, equivalencesReverse);
+	}
+
+	private boolean latEquivalent(ElementBS p, ElementBS c, HashMap<ElementBS, Integer> equivalences) {
+		for (ElementBS e1 : p.pre) {
+			boolean found = false;
+
+			for (ElementBS e2 : c.pre)
+				if (e1.code.equals(e2.code))
+					if (equivalences.get(e1).intValue() == equivalences.get(e2).intValue()) {
+						found = true;
+						break;
+					}
+
+			if (!found)
+				return false;
+		}
+
+		return true;
 	}
 }

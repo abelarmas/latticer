@@ -23,8 +23,8 @@ import com.google.common.collect.Table;
 import com.google.common.collect.Table.Cell;
 
 import at.unisalzburg.dbresearch.apted.node.Node;
-import ee.ut.eventstr.PrimeEventStructure;
 import uni.melb.au.log.Trace;
+import uni.melb.au.utils.PrimeEventStructure;
 
 public class LatticeBS {
 	LinkedList<String> labels;
